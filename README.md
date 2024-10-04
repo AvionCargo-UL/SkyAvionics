@@ -6,8 +6,8 @@ Beep boop on the plane!
 ## :computer: On machine
 1. Download [Python 3.10](https://www.python.org/downloads/release/python-3100/)
 2. Download [PyCharm Community Edition](https://www.jetbrains.com/pycharm/download/) or [VSCode](https://code.visualstudio.com/download)
-3. Install packages with `requirements.txt`
-   1. When your venv is activated run: `pip install -r requirements.txt`
+3. Install packages with `dev-requirements.txt`
+   1. When your venv is activated run: `pip install -r dev-requirements.txt`
     
 # Launching :rocket:
 
