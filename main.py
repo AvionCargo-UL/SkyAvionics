@@ -1,39 +1,23 @@
-from typing import List
-
 import cv2
 
-from src.domain.vision.aruco import Aruco
-from src.domain.vision.vision_controller import VisionController
+from src.domain.vision.exception.unable_to_read_frame_exception import (
+    UnableToReadFrameException,
+)
+from src.domain.vision.vision_thread import VisionThread
 
 
 def main():
-    vision_controller = VisionController()
+    vision_thread = VisionThread()
+    vision_thread.start()
 
-    cap = cv2.VideoCapture(0)
-
-    while True:
-        ret, frame = cap.read()
-
-        if not ret:
-            print("Failed to grab frame")
-            break
-
-        arucos: List[Aruco] = vision_controller.do_aruco_detection(frame)
-        if len(arucos) > 0:
-            print(arucos)
-
-        # if ids is not None:
-        #     # Draw detected markers on the frame
-        #     cv2.aruco.drawDetectedMarkers(frame, corners, ids)
-
-        cv2.imshow('Webcam with ArUco Detection', frame)
-
-        # Break the loop if 'q' key is pressed
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    cap.release()
-    cv2.destroyAllWindows()
+    try:
+        while vision_thread.is_alive():
+            pass
+    except UnableToReadFrameException as e:
+        vision_thread.dispose()
+        print(e)
+    finally:
+        cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
