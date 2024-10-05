@@ -11,12 +11,11 @@ def main():
     vision_thread.start()
 
     try:
-        while vision_thread.is_alive():
-            pass
+        vision_thread.join()
     except UnableToReadFrameException as e:
-        vision_thread.dispose()
         print(e)
     finally:
+        vision_thread.dispose()
         cv2.destroyAllWindows()
 
 
