@@ -6,4 +6,4 @@ class Aruco:
         return f"Identifier {self.__identifier}"
 
     def __repr__(self):
-        return f"Aruco({self.__identifier}"
+        return f"Aruco({self.__identifier})"

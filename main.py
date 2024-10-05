@@ -3,7 +3,7 @@ import cv2
 from src.domain.vision.exception.unable_to_read_frame_exception import (
     UnableToReadFrameException,
 )
-from src.domain.vision.vision_thread import VisionThread
+from src.application.vision.vision_thread import VisionThread
 
 
 def main():
