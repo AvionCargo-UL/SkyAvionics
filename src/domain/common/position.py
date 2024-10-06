@@ -11,6 +11,9 @@ class Position:
     def y(self) -> float:
         return self.__y
 
+    def to_int_tuple(self) -> tuple[int, int]:
+        return int(self.__x), int(self.__y)
+
     def __str__(self):
         return f"{self.__x}, {self.__y}"
 
