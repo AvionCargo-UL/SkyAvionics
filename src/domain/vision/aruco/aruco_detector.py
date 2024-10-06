@@ -3,7 +3,7 @@ from typing import List
 import cv2
 
 from src.domain.vision.aruco import Aruco
-from src.domain.vision.aruco_factory import ArucoFactory
+from src.domain.vision.aruco.aruco_factory import ArucoFactory
 
 
 class ArucoDetector:
