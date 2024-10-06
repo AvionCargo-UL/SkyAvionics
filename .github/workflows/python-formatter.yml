@@ -38,4 +38,4 @@ jobs:
     - name: Check code with black for ./src
       if: steps.bot_exists.outputs.exists == 'true'
       run: |
-        black ./src
+        black ./src --check
