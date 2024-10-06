@@ -1,5 +1,3 @@
-from typing import List
-
 import numpy as np
 
 from src.domain.common.position import Position
@@ -10,11 +8,11 @@ class ArucoFactory:
     def __init__(self):
         pass
 
-    def __create_position(self, corners: List) -> Position:
-        position_x: float = np.mean(corners[0][:, 0])
-        position_y: float = np.mean(corners[0][:, 0])
+    def __create_position(self, corners: np.ndarray) -> Position:
+        position_x = float(np.mean(corners[0][:, 0]))
+        position_y = float(np.mean(corners[0][:, 0]))
         return Position(position_x, position_y)
 
-    def create(self, identifier: int, corners: List) -> Aruco:
+    def create(self, identifier: int, corners: np.ndarray) -> Aruco:
         position = self.__create_position(corners)
         return Aruco(identifier, position)
