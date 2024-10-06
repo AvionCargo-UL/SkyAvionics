@@ -13,21 +13,21 @@ from src.domain.vision.vision_controller import VisionController
 
 class VisionThread(threading.Thread):
 
-    CAMERA_INDEX: int = 0
-    THREAD_FREQUENCY_SECOND: float = 0.1
-
-    def __init__(self):
+    def __init__(self, camera_index: int, thread_frequency_second: float):
         threading.Thread.__init__(self)
+
+        self.__camera_index = camera_index
+        self.__thread_frequency_second = thread_frequency_second
 
         self.__vision_controller = VisionController()
         self.__stop_event = threading.Event()
-        self.__capture = cv2.VideoCapture(self.CAMERA_INDEX)
+        self.__capture = cv2.VideoCapture(self.__camera_index)
 
     def __read_frame(self) -> cv2.Mat:
         ret, frame = self.__capture.read()
 
         if not ret:
-            raise UnableToReadFrameException(self.CAMERA_INDEX)
+            raise UnableToReadFrameException(self.__camera_index)
 
         return frame
 
@@ -39,7 +39,7 @@ class VisionThread(threading.Thread):
             if len(arucos) > 0:
                 print(arucos)
 
-            time.sleep(self.THREAD_FREQUENCY_SECOND)
+            time.sleep(self.__thread_frequency_second)
 
         self.dispose()
 
