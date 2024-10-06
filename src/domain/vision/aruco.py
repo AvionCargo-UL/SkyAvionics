@@ -1,4 +1,4 @@
-from src.domain.position import Position
+from src.domain.common.position import Position
 
 
 class Aruco:
@@ -14,7 +14,7 @@ class Aruco:
         return self.__position
 
     def __str__(self):
-        return f"Identifier {self.__identifier}, {self.__position}"
+        return f"{self.__identifier}, {self.__position}"
 
     def __repr__(self):
-        return f"Aruco({self.__identifier}, {self.__position})"
+        return f"Aruco({self.__identifier}, {repr(self.__position)})"

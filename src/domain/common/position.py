@@ -10,3 +10,9 @@ class Position:
     @property
     def y(self) -> float:
         return self.__y
+
+    def __str__(self):
+        return f"{self.__x}, {self.__y}"
+
+    def __repr__(self):
+        return f"Position({self.__x}, {self.__y})"

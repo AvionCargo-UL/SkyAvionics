@@ -17,7 +17,11 @@ class ArucoDetector:
             grayscale_image, self.__aruco_dict, parameters=self.__parameters
         )
 
-        return [
-            self.__aruco_factory.create(identifier, corner)
-            for identifier, corner in zip(ids, corners)
-        ]
+        return (
+            [
+                self.__aruco_factory.create(identifier, corner)
+                for identifier, corner in zip(ids, corners)
+            ]
+            if ids is not None
+            else []
+        )
