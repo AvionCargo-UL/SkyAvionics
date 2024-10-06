@@ -8,7 +8,16 @@ Beep boop on the plane!
 2. Download [PyCharm Community Edition](https://www.jetbrains.com/pycharm/download/) or [VSCode](https://code.visualstudio.com/download)
 3. Install packages with `dev-requirements.txt`
    1. When your venv is activated run: `pip install -r dev-requirements.txt`
-    
+
+## :gear: .yaml configuration
+1. At the root of the project create aig.yaml file named `dev-conf`.
+2. Add the following lines for to the configuration file:
+    ```yaml
+   vision:
+     camera_index: 0
+     thread_frequency_second: 0.25
+    ```
+
 # Launching :rocket:
 
 ## :computer: On machine

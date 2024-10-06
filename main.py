@@ -1,21 +1,16 @@
 import cv2
 
-from src.domain.vision.exception.unable_to_read_frame_exception import (
-    UnableToReadFrameException,
-)
-from src.application.vision.vision_thread import VisionThread
+from src.configuration.environment.context.development_context import DevelopmentContext
 
 
 def main():
-    vision_thread = VisionThread()
-    vision_thread.start()
+
+    application_context = DevelopmentContext()
+    application_context.build_application()
 
     try:
-        vision_thread.join()
-    except UnableToReadFrameException as e:
-        print(e)
+        application_context.start_application()
     finally:
-        vision_thread.dispose()
         cv2.destroyAllWindows()
 
 
