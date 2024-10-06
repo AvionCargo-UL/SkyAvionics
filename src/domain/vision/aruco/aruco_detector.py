@@ -2,7 +2,7 @@ from typing import List
 
 import cv2
 
-from src.domain.vision.aruco import Aruco
+from src.domain.vision.aruco.aruco import Aruco
 from src.domain.vision.aruco.aruco_factory import ArucoFactory
 
 

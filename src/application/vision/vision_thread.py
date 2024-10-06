@@ -4,7 +4,7 @@ from typing import List
 
 import cv2
 
-from src.domain.vision.aruco import Aruco
+from src.domain.vision.aruco.aruco import Aruco
 from src.domain.vision.exception.unable_to_read_frame_exception import (
     UnableToReadFrameException,
 )

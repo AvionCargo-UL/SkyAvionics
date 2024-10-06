@@ -3,7 +3,7 @@ from typing import List
 import numpy as np
 
 from src.domain.common.position import Position
-from src.domain.vision.aruco import Aruco
+from src.domain.vision.aruco.aruco import Aruco
 
 
 class ArucoFactory:
