@@ -1,3 +1,4 @@
 opencv-python==4.10.0.84
 opencv-contrib-python==4.10.0.84
 pyYAML==6.0.2
+numpy==2.1.1
