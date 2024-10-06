@@ -20,7 +20,7 @@ class ArucoDetector:
         return (
             [
                 self.__aruco_factory.create(identifier, corner)
-                for identifier, corner in zip(ids, corners)
+                for identifier, corner in zip(ids.flatten(), corners)
             ]
             if ids is not None
             else []
