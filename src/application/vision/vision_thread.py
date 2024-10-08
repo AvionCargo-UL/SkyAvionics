@@ -5,7 +5,6 @@ from typing import List
 import cv2
 
 from src.domain.vision.aruco.aruco import Aruco
-from src.domain.vision.aruco.aruco_drawer import ArucoDrawer
 from src.domain.vision.exception.unable_to_read_frame_exception import (
     UnableToReadFrameException,
 )
@@ -20,7 +19,6 @@ class VisionThread(threading.Thread):
         self.__camera_index = camera_index
         self.__thread_frequency_second = thread_frequency_second
 
-        self.__aruco_drawer = ArucoDrawer()
         self.__vision_controller = VisionController()
 
         self.__stop_event = threading.Event()
@@ -39,7 +37,7 @@ class VisionThread(threading.Thread):
             frame = self.__read_frame()
 
             arucos: List[Aruco] = self.__vision_controller.do_aruco_detection(frame)
-            self.__aruco_drawer.draw(frame, arucos)
+            self.__vision_controller.draw_on_aruco(frame, arucos)
 
             time.sleep(self.__thread_frequency_second)
 
