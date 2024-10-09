@@ -10,5 +10,5 @@ class DevelopmentContext(ApplicationContext):
     def _instantiate_vision_thread(self) -> VisionThread:
         return VisionThread(
             self._configuration.vision_camera_index,
-            self._configuration.vision_thread_frequency,
+            self._configuration.vision_fps,
         )

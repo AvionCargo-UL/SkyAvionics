@@ -28,14 +28,14 @@ class ApplicationConfiguration:
 
     @property
     def vision_camera_index(self) -> int:
-        return self.__get_variable(
+        return self.__get_int(
             ApplicationConfigurationHeaderKey.VISION,
             VisionConfigurationKey.CAMERA_INDEX,
         )
 
     @property
-    def vision_thread_frequency(self) -> float:
-        return self.__get_variable(
+    def vision_fps(self) -> int:
+        return self.__get_int(
             ApplicationConfigurationHeaderKey.VISION,
-            VisionConfigurationKey.THREAD_FREQUENCY_SECOND,
+            VisionConfigurationKey.FPS,
         )
