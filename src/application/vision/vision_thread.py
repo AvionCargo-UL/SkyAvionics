@@ -13,11 +13,11 @@ from src.domain.vision.vision_controller import VisionController
 
 class VisionThread(threading.Thread):
 
-    def __init__(self, camera_index: int, thread_frequency_second: float):
+    def __init__(self, camera_index: int, fps: float):
         threading.Thread.__init__(self)
 
         self.__camera_index = camera_index
-        self.__thread_frequency_second = thread_frequency_second
+        self.__thread_frequency_second = 1.0 / fps
 
         self.__vision_controller = VisionController()
 

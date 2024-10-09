@@ -15,7 +15,7 @@ Beep boop on the plane!
     ```yaml
    vision:
      camera_index: 0
-     thread_frequency_second: 0.25
+     fps: 0.25
     ```
 
 # Launching :rocket:

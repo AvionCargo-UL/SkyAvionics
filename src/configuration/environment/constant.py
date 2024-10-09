@@ -8,4 +8,4 @@ class ApplicationConfigurationHeaderKey:
 
 class VisionConfigurationKey:
     CAMERA_INDEX: str = "camera_index"
-    THREAD_FREQUENCY_SECOND: str = "thread_frequency_second"
+    FPS: str = "fps"
