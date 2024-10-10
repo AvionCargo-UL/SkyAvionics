@@ -1,13 +1,17 @@
 from typing import List
 
+from src.domain.common.angle import Angle
 from src.domain.common.position import Position
 
 
 class Aruco:
-    def __init__(self, identifier: int, position: Position, corners: List[Position]):
+    def __init__(
+        self, identifier: int, position: Position, angle: Angle, corners: List[Position]
+    ):
         self.__identifier = identifier
         self.__position = position
         self.__corners = corners
+        self.__angle = angle
 
     @property
     def identifier(self) -> int:
@@ -16,6 +20,10 @@ class Aruco:
     @property
     def position(self) -> Position:
         return self.__position
+
+    @property
+    def angle(self) -> Angle:
+        return self.__angle
 
     @property
     def top_left(self) -> Position:

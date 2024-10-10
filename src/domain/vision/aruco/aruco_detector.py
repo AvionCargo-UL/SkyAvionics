@@ -7,8 +7,8 @@ from src.domain.vision.aruco.aruco_factory import ArucoFactory
 
 
 class ArucoDetector:
-    def __init__(self):
-        self.__aruco_factory = ArucoFactory()
+    def __init__(self, aruco_factory: ArucoFactory):
+        self.__aruco_factory = aruco_factory
         self.__aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_250)
         self.__parameters = cv2.aruco.DetectorParameters()
 

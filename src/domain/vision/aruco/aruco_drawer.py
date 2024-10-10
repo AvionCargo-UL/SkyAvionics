@@ -1,6 +1,7 @@
 from typing import List
 
 import cv2
+import numpy as np
 
 from src.domain.vision.aruco.aruco import Aruco
 
@@ -16,8 +17,11 @@ class ArucoDrawer:
     FONT_THICKNESS: int = 3
     FONT_COLOR: tuple = (255, 0, 0)
 
-    def __init__(self):
-        pass
+    AXIS_LENGTH: int = 10
+
+    def __init__(self, camera_distortion: np.ndarray, camera_matrix: np.ndarray):
+        self.__camera_distortion = camera_distortion
+        self.__camera_matrix = camera_matrix
 
     def __draw_contour(self, image: cv2.Mat, aruco: Aruco):
         cv2.line(
@@ -63,7 +67,18 @@ class ArucoDrawer:
             self.FONT_THICKNESS,
         )
 
+    def __draw_axis(self, image: cv2.Mat, aruco: Aruco):
+        cv2.drawFrameAxes(
+            image,
+            self.__camera_matrix,
+            self.__camera_distortion,
+            aruco.angle.rotation_vector,
+            aruco.angle.translation_vector,
+            length=self.AXIS_LENGTH,
+        )
+
     def draw(self, image: cv2.Mat, arucos: List[Aruco]):
         for aruco in arucos:
             self.__draw_contour(image, aruco)
             self.__draw_identifier(image, aruco)
+            self.__draw_axis(image, aruco)
