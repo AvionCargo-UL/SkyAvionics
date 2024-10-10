@@ -18,4 +18,4 @@ class VisionConfigurationKey:
 
 
 class AntennaCommunicationConfigurationKey:
-    REFRESH_RATE_S: str = "refresh_rate"
+    REFRESH_RATE_S: str = "refresh_rate_s"

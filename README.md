@@ -21,6 +21,8 @@ Beep boop on the plane!
      focal_length_mm: 4.0
      pixel_size_mm: 0.005
      marker_size: 10
+   antenna_communication:
+     refresh_rate_s: 0.05
     ```
 
 # Launching :rocket:
