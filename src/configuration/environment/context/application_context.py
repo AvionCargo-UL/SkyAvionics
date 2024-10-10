@@ -1,7 +1,11 @@
 from abc import abstractmethod, ABC
+from queue import Queue
 
 import numpy as np
 
+from src.application.communication.antenna_communication_thread import (
+    AntennaCommunicationThread,
+)
 from src.application.vision.vision_thread import VisionThread
 from src.configuration.environment.application_configuration import (
     ApplicationConfiguration,
@@ -19,9 +23,15 @@ class ApplicationContext(ABC):
 
     def start_application(self):
         vision_thread: VisionThread = ServiceLocator.get_dependency(VisionThread)
+        antenna_communication_thread: AntennaCommunicationThread = (
+            ServiceLocator.get_dependency(AntennaCommunicationThread)
+        )
+
         vision_thread.start()
+        antenna_communication_thread.start()
 
         try:
+            antenna_communication_thread.join()
             vision_thread.join()
         except UnableToReadFrameException as e:
             print(e)
@@ -30,6 +40,9 @@ class ApplicationContext(ABC):
 
     def build_application(self):
         ServiceLocator.clear()
+
+        send_queue = Queue()
+        response_queue = Queue()
 
         camera_distortion = self._load_camera_distortion()
         camera_matrix = self._load_camera_matrix()
@@ -41,6 +54,17 @@ class ApplicationContext(ABC):
         ServiceLocator.register_dependency(
             VisionThread, self._instantiate_vision_thread(vision_controller)
         )
+
+        ServiceLocator.register_dependency(
+            AntennaCommunicationThread,
+            self._instantiate_antenna_communication_thread(send_queue, response_queue),
+        )
+
+    @abstractmethod
+    def _instantiate_antenna_communication_thread(
+        self, send_queue: Queue, response_queue: Queue
+    ) -> AntennaCommunicationThread:
+        pass
 
     @abstractmethod
     def _instantiate_vision_thread(

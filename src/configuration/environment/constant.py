@@ -4,6 +4,7 @@ class ContextConfigurationFilename:
 
 class ApplicationConfigurationHeaderKey:
     VISION: str = "vision"
+    ANTENNA_COMMUNICATION: str = "antenna_communication"
 
 
 class VisionConfigurationKey:
@@ -14,3 +15,7 @@ class VisionConfigurationKey:
     FOCAL_LENGTH_MM: str = "focal_length_mm"
     PIXEL_SIZE_MM: str = "pixel_size_mm"
     MARKER_SIZE: str = "marker_size"
+
+
+class AntennaCommunicationConfigurationKey:
+    REFRESH_RATE_S: str = "refresh_rate"

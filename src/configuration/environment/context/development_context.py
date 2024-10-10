@@ -1,5 +1,10 @@
+from queue import Queue
+
 import numpy as np
 
+from src.application.communication.antenna_communication_thread import (
+    AntennaCommunicationThread,
+)
 from src.application.vision.vision_thread import VisionThread
 from src.configuration.environment.constant import ContextConfigurationFilename
 from src.configuration.environment.context.application_context import ApplicationContext
@@ -13,6 +18,15 @@ from src.domain.vision.vision_controller import VisionController
 class DevelopmentContext(ApplicationContext):
     def __init__(self):
         super().__init__(ContextConfigurationFilename.DEVELOPMENT)
+
+    def _instantiate_antenna_communication_thread(
+        self, send_queue: Queue, response_queue: Queue
+    ) -> AntennaCommunicationThread:
+        return AntennaCommunicationThread(
+            self._configuration.antenna_communication_refresh_rate_s,
+            send_queue,
+            response_queue,
+        )
 
     def _instantiate_vision_thread(
         self, vision_controller: VisionController
