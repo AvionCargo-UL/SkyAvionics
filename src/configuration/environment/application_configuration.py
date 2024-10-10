@@ -3,6 +3,7 @@ import yaml
 from src.configuration.environment.constant import (
     ApplicationConfigurationHeaderKey,
     VisionConfigurationKey,
+    AntennaCommunicationConfigurationKey,
 )
 from src.configuration.environment.exception.application_variable_not_found_exception import (
     ApplicationVariableNotFoundException,
@@ -72,4 +73,11 @@ class ApplicationConfiguration:
     def vision_marker_size(self) -> int:
         return self.__get_int(
             ApplicationConfigurationHeaderKey.VISION, VisionConfigurationKey.MARKER_SIZE
+        )
+
+    @property
+    def antenna_communication_refresh_rate_s(self) -> float:
+        return self.__get_float(
+            ApplicationConfigurationHeaderKey.ANTENNA_COMMUNICATION,
+            AntennaCommunicationConfigurationKey.REFRESH_RATE_S,
         )
