@@ -39,3 +39,37 @@ class ApplicationConfiguration:
             ApplicationConfigurationHeaderKey.VISION,
             VisionConfigurationKey.FPS,
         )
+
+    @property
+    def vision_image_width(self) -> int:
+        return self.__get_int(
+            ApplicationConfigurationHeaderKey.VISION,
+            VisionConfigurationKey.IMAGE_WIDTH,
+        )
+
+    @property
+    def vision_image_height(self) -> int:
+        return self.__get_int(
+            ApplicationConfigurationHeaderKey.VISION,
+            VisionConfigurationKey.IMAGE_HEIGHT,
+        )
+
+    @property
+    def vision_focal_length_mm(self) -> float:
+        return self.__get_float(
+            ApplicationConfigurationHeaderKey.VISION,
+            VisionConfigurationKey.FOCAL_LENGTH_MM,
+        )
+
+    @property
+    def vision_pixel_size_mm(self) -> float:
+        return self.__get_float(
+            ApplicationConfigurationHeaderKey.VISION,
+            VisionConfigurationKey.PIXEL_SIZE_MM,
+        )
+
+    @property
+    def vision_marker_size(self) -> int:
+        return self.__get_int(
+            ApplicationConfigurationHeaderKey.VISION, VisionConfigurationKey.MARKER_SIZE
+        )
