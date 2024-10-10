@@ -15,7 +15,12 @@ Beep boop on the plane!
     ```yaml
    vision:
      camera_index: 0
-     fps: 0.25
+     fps: 25
+     image_width: 640
+     image_height: 480
+     focal_length_mm: 4.0
+     pixel_size_mm: 0.005
+     marker_size: 10
     ```
 
 # Launching :rocket:

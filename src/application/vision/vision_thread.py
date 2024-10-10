@@ -30,7 +30,7 @@ class VisionThread(threading.Thread):
         self.__capture = cv2.VideoCapture(self.__camera_index)
 
     def __read_frame(self) -> cv2.Mat:
-        ret, frame = self.__capture.read()  # 480, 640
+        ret, frame = self.__capture.read()
 
         if not ret:
             raise UnableToReadFrameException(self.__camera_index)
