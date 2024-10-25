@@ -29,28 +29,87 @@ class ApplicationContext(ABC):
 
         mavlink_service: MavlinkService = ServiceLocator.get_dependency(MavlinkService)
 
-        print(mavutil.mavlink.MAV_CMD_NAV_TAKEOFF)
-        print(mavutil.mavlink.MAV_CMD_NAV_WAYPOINT)
-        print(mavutil.mavlink.MAV_CMD_NAV_LAND)
-
-        mavlink_service.set_home_position()
-
         mission_items: List[MavlinkMissionItem] = [
-            # MavlinkMissionItem(
-            #     0, 0, 0, mavutil.mavlink.MAV_FRAME_GLOBAL,
-            #     mavutil.mavlink.MAV_CMD_DO_SET_HOME, 0, 0, 0, 0, 0, 0, 37.874, -122.262, 10),  # Home
             MavlinkMissionItem(
-                0, 0, 0, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
-                mavutil.mavlink.MAV_CMD_NAV_TAKEOFF, 0, 0, 0, 0, 0, 0, 37.874, -122.259, 10),  # Takeoff
+                0,
+                0,
+                0,
+                mavutil.mavlink.MAV_FRAME_GLOBAL,
+                mavutil.mavlink.MAV_CMD_NAV_WAYPOINT,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                37.874,
+                -122.262,
+                0,
+            ),  # Home
             MavlinkMissionItem(
-                0, 0, 1, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
-                mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, 0, 0, 0, 0, 0, 37.874, -122.5, 20),  # Waypoint 2
+                0,
+                0,
+                1,
+                mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
+                mavutil.mavlink.MAV_CMD_NAV_TAKEOFF,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                37.874,
+                -122.262,
+                1,
+            ),  # Takeoff
             MavlinkMissionItem(
-                0, 0, 2, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
-                mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, 0, 0, 0, 0, 0, 37.8, -122.259, 20),  # Waypoint 3
+                0,
+                0,
+                2,
+                mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
+                mavutil.mavlink.MAV_CMD_NAV_WAYPOINT,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                37.874,
+                -122.5,
+                20,
+            ),  # Waypoint 2
             MavlinkMissionItem(
-                0, 0, 3, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
-                mavutil.mavlink.MAV_CMD_NAV_LAND, 0, 0, 0, 0, 0, 0, 0, 0, 0)  # Return to launch
+                0,
+                0,
+                3,
+                mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
+                mavutil.mavlink.MAV_CMD_NAV_WAYPOINT,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                37.8,
+                -122.259,
+                20,
+            ),  # Waypoint 3
+            MavlinkMissionItem(
+                0,
+                0,
+                4,
+                mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
+                mavutil.mavlink.MAV_CMD_NAV_LAND,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+            ),  # Return to launch
         ]
 
         mavlink_service.upload_mission(mission_items)
@@ -60,12 +119,12 @@ class ApplicationContext(ABC):
             ServiceLocator.get_dependency(AntennaCommunicationThread)
         )
 
-        # vision_thread.start()
-        # antenna_communication_thread.start()
+        vision_thread.start()
+        antenna_communication_thread.start()
 
         try:
-            # antenna_communication_thread.join()
-            # vision_thread.join()
+            antenna_communication_thread.join()
+            vision_thread.join()
             pass
         except UnableToReadFrameException as e:
             print(e)
@@ -94,7 +153,9 @@ class ApplicationContext(ABC):
             self._instantiate_antenna_communication_thread(send_queue, response_queue),
         )
 
-        ServiceLocator.register_dependency(MavlinkService, self._instantiate_mavlink_service("COM5", 115200, 5000, 3))
+        ServiceLocator.register_dependency(
+            MavlinkService, self._instantiate_mavlink_service("COM5", 115200, 5000, 3)
+        )
 
     @abstractmethod
     def _instantiate_antenna_communication_thread(

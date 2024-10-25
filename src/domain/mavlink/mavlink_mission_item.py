@@ -1,5 +1,21 @@
 class MavlinkMissionItem:
-    def __init__(self, target_system: int, target_component: int, seq: int, frame: int, command: int, current: int, autocontinue: int, param1: float, param2: float, param3: float, param4: float, x: float, y: float, z: float):
+    def __init__(
+        self,
+        target_system: int,
+        target_component: int,
+        seq: int,
+        frame: int,
+        command: int,
+        current: int,
+        autocontinue: int,
+        param1: float,
+        param2: float,
+        param3: float,
+        param4: float,
+        x: float,
+        y: float,
+        z: float,
+    ):
         self.target_system = target_system
         self.target_component = target_component
         self.seq = seq
@@ -30,5 +46,5 @@ class MavlinkMissionItem:
             "param4": self.param4,
             "x": self.x,
             "y": self.y,
-            "z": self.z
+            "z": self.z,
         }
