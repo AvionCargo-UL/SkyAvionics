@@ -5,6 +5,7 @@ import numpy as np
 from src.application.communication.antenna_communication_thread import (
     AntennaCommunicationThread,
 )
+from src.application.mavlink.mavlink_service import MavlinkService
 from src.application.vision.vision_thread import VisionThread
 from src.configuration.environment.constant import ContextConfigurationFilename
 from src.configuration.environment.context.application_context import ApplicationContext
@@ -47,6 +48,11 @@ class DevelopmentContext(ApplicationContext):
         aruco_detector = ArucoDetector(aruco_factory)
         aruco_drawer = ArucoDrawer(camera_distortion, camera_matrix)
         return VisionController(aruco_detector, aruco_drawer)
+
+    def _instantiate_mavlink_service(
+        self, port: str, baudrate: int, timeout_ms: int, retries: int
+    ) -> MavlinkService:
+        return MavlinkService(port, baudrate, timeout_ms, retries)
 
     def _load_camera_distortion(self) -> np.ndarray:
         return np.array([0, 0, 0, 0], dtype=np.float32)

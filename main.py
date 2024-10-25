@@ -31,7 +31,7 @@ def test_pymavlink():
             mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, 0, 0, 0, 0, 0, 37.8, -122.259, 20),  # Waypoint 3
         master.mav.mission_item_encode(
             0, 0, 4, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
-            mavutil.mavlink.MAV_CMD_NAV_RETURN_TO_LAUNCH, 0, 0, 0, 0, 0, 0, 0, 0, 0)  # Return to launch
+            mavutil.mavlink.MAV_CMD_NAV_LAND, 0, 0, 0, 0, 0, 0, 0, 0, 0)  # Return to launch
     ]
 
     print("Sending!")
@@ -70,5 +70,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    test_pymavlink()
+    main()
+    # test_pymavlink()
