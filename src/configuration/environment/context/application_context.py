@@ -20,8 +20,10 @@ from src.domain.vision.exception.unable_to_read_frame_exception import (
 )
 from src.domain.vision.vision_controller import VisionController
 
-
 class ApplicationContext(ABC):
+    """
+    My first little commit ! 
+    """
     def __init__(self, filepath: str):
         self._configuration = ApplicationConfiguration(filepath)
 
