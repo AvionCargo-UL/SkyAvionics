@@ -15,20 +15,35 @@ from src.configuration.environment.application_configuration import (
 )
 from src.configuration.service_locator import ServiceLocator
 from src.domain.mavlink.mavlink_mission_item import MavlinkMissionItem
+from src.domain.state_machine.state import State
+from src.domain.state_machine.state_machine import StateMachine
+
+
+from src.domain.state_machine.states.idle import Idle
+
+from src.domain.state_machine.states.takeoff import Takeoff
+
+from src.domain.state_machine.states.fly import Fly
+
+from src.domain.state_machine.states.detect_aruco import DetectAruco
+from src.domain.state_machine.states_enum import StateEnum
 from src.domain.vision.exception.unable_to_read_frame_exception import (
     UnableToReadFrameException,
 )
 from src.domain.vision.vision_controller import VisionController
 
+
 class ApplicationContext(ABC):
     """
-    My first little commit ! 
+    My first little commit !
     """
+
     def __init__(self, filepath: str):
         self._configuration = ApplicationConfiguration(filepath)
 
     def start_application(self):
 
+        state_machine: StateMachine = ServiceLocator.get_dependency(StateMachine)
         mavlink_service: MavlinkService = ServiceLocator.get_dependency(MavlinkService)
 
         mission_items: List[MavlinkMissionItem] = [
@@ -124,10 +139,12 @@ class ApplicationContext(ABC):
         vision_thread.start()
         antenna_communication_thread.start()
 
+        while True:
+            state_machine.execute()
+
         try:
             antenna_communication_thread.join()
             vision_thread.join()
-            pass
         except UnableToReadFrameException as e:
             print(e)
         finally:
@@ -135,6 +152,14 @@ class ApplicationContext(ABC):
 
     def build_application(self):
         ServiceLocator.clear()
+
+        states: dict[StateEnum, State] = {
+            StateEnum.IDLE: Idle(),
+            StateEnum.TAKEOFF: Takeoff(),
+            StateEnum.FLY: Fly(0.25),
+            StateEnum.DETECT_ARUCO: DetectAruco(),
+        }
+        state_machine = StateMachine(states, StateEnum.TAKEOFF)
 
         send_queue = Queue()
         response_queue = Queue()
@@ -158,6 +183,8 @@ class ApplicationContext(ABC):
         ServiceLocator.register_dependency(
             MavlinkService, self._instantiate_mavlink_service("COM5", 115200, 5000, 3)
         )
+
+        ServiceLocator.register_dependency(StateMachine, state_machine)
 
     @abstractmethod
     def _instantiate_antenna_communication_thread(
