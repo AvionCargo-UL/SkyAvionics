@@ -30,6 +30,7 @@ class VisionThread(threading.Thread):
         self.__capture = cv2.VideoCapture(self.__camera_index)
 
     def __read_frame(self) -> cv2.Mat:
+        # TODO : Change the capture from computer to RPI
         ret, frame = self.__capture.read()
 
         if not ret:
@@ -44,6 +45,9 @@ class VisionThread(threading.Thread):
             try:
                 arucos: List[Aruco] = self.__vision_controller.do_aruco_detection(frame)
                 self.__vision_controller.draw_aruco(frame, arucos)
+
+                # TODO : Send the frame to the GCS
+
             except InvalidRotationMatrixException as e:
                 print(e)
             finally:

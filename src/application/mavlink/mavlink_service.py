@@ -4,6 +4,7 @@ from pymavlink import mavutil
 from pymavlink.mavutil import mavserial
 
 from src.domain.mavlink.mavlink_mission_item import MavlinkMissionItem
+from src.configuration.service_locator import ServiceLocator
 
 
 class MavlinkService:
@@ -71,3 +72,8 @@ class MavlinkService:
             self.__mavlink_server.mav.mission_item_send(**item.to_dict())
 
         print("Mission uploaded!")
+
+    def adjust_mission():
+        
+        # TODO : Parse the information from the vision and the GPS, and update mission item
+        pass

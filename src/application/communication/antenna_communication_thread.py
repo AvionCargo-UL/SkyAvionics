@@ -15,7 +15,11 @@ class AntennaCommunicationThread(threading.Thread):
 
     def run(self):
         while not self.__stop_event.is_set():
-            time.sleep(self.__refresh_rate_s)
+
+            # TODO : Parse DATA from GCS
+            # TODO : Send DATA to GCS
+            
+            time.sleep(self.__thread_frequency_second)
 
     def stop(self):
         self.__stop_event.set()
