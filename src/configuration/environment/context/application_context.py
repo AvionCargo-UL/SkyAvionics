@@ -5,9 +5,6 @@ from typing import List
 import numpy as np
 from pymavlink import mavutil
 
-from src.application.communication.antenna_communication_thread import (
-    AntennaCommunicationThread,
-)
 from src.application.mavlink.mavlink_service import MavlinkService
 from src.application.vision.vision_thread import VisionThread
 from src.configuration.environment.application_configuration import (
@@ -32,11 +29,10 @@ from src.domain.vision.exception.unable_to_read_frame_exception import (
 )
 from src.domain.vision.vision_controller import VisionController
 
+from src.interfaces.api.fast_api_thread import FastAPIThread
+
 
 class ApplicationContext(ABC):
-    """
-    My first little commit !
-    """
 
     def __init__(self, filepath: str):
         self._configuration = ApplicationConfiguration(filepath)
@@ -44,7 +40,7 @@ class ApplicationContext(ABC):
     def start_application(self):
 
         state_machine: StateMachine = ServiceLocator.get_dependency(StateMachine)
-        mavlink_service: MavlinkService = ServiceLocator.get_dependency(MavlinkService)
+        #mavlink_service: MavlinkService = ServiceLocator.get_dependency(MavlinkService)
 
         mission_items: List[MavlinkMissionItem] = [
             MavlinkMissionItem(
@@ -129,26 +125,25 @@ class ApplicationContext(ABC):
             ),  # Return to launch
         ]
 
-        mavlink_service.upload_mission(mission_items)
+        #mavlink_service.upload_mission(mission_items)
 
         vision_thread: VisionThread = ServiceLocator.get_dependency(VisionThread)
-        antenna_communication_thread: AntennaCommunicationThread = (
-            ServiceLocator.get_dependency(AntennaCommunicationThread)
-        )
+        fast_api_thread: FastAPIThread = ServiceLocator.get_dependency(FastAPIThread)
 
         vision_thread.start()
-        antenna_communication_thread.start()
+        fast_api_thread.start()
 
-        while True:
-            state_machine.execute()
+        #while True:
+        #    state_machine.execute()
 
         try:
-            antenna_communication_thread.join()
+            fast_api_thread.join()
             vision_thread.join()
         except UnableToReadFrameException as e:
             print(e)
         finally:
             vision_thread.dispose()
+            fast_api_thread.dispose()
 
     def build_application(self):
         ServiceLocator.clear()
@@ -161,7 +156,8 @@ class ApplicationContext(ABC):
         }
         state_machine = StateMachine(states, StateEnum.TAKEOFF)
 
-        send_queue = Queue()
+        send_frame_queue = Queue()
+        send_telemetry_queue = Queue()
         response_queue = Queue()
 
         camera_distortion = self._load_camera_distortion()
@@ -172,30 +168,31 @@ class ApplicationContext(ABC):
         )
 
         ServiceLocator.register_dependency(
-            VisionThread, self._instantiate_vision_thread(vision_controller)
+            VisionThread, self._instantiate_vision_thread(vision_controller, send_frame_queue)
         )
 
         ServiceLocator.register_dependency(
-            AntennaCommunicationThread,
-            self._instantiate_antenna_communication_thread(send_queue, response_queue),
+            FastAPIThread,
+            self._instantiate_fast_API_thread(send_frame_queue, send_telemetry_queue, response_queue),
         )
 
-        ServiceLocator.register_dependency(
-            MavlinkService, self._instantiate_mavlink_service("COM5", 115200, 5000, 3)
-        )
+        # ServiceLocator.register_dependency(
+        #    MavlinkService, self._instantiate_mavlink_service("COM5", 115200, 5000, 3)
+        # )
 
         ServiceLocator.register_dependency(StateMachine, state_machine)
 
-    @abstractmethod
-    def _instantiate_antenna_communication_thread(
-        self, send_queue: Queue, response_queue: Queue
-    ) -> AntennaCommunicationThread:
-        pass
 
     @abstractmethod
     def _instantiate_vision_thread(
-        self, vision_controller: VisionController
+        self, vision_controller: VisionController, send_frame_queue : Queue
     ) -> VisionThread:
+        pass
+
+    @abstractmethod
+    def _instantiate_fast_API_thread(
+        self, send_frame_queue : Queue, send_telemetry_queue: Queue, response_queue = Queue,
+    ) -> FastAPIThread:
         pass
 
     @abstractmethod

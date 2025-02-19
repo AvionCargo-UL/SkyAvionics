@@ -5,6 +5,7 @@ from src.domain.state_machine.states_enum import StateEnum
 class Idle(State):
     def on_enter(self):
         print("Idle - on_enter")
+        pass
 
     def execute(self) -> StateEnum:
         print("Idle - execute")

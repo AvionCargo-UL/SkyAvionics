@@ -1,0 +1,8 @@
+http://132.203.16.129:8000/video_streaming
+
+
+
+pip install 'uvicorn[standard]' websockets --break-system-packages
+
+
+10.42.0.1

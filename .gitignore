@@ -294,6 +294,9 @@ pyrightconfig.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
+# Ignore .workspace files in the root directory
+/*.code-workspace
+
 # Local History for Visual Studio Code
 .history/
 
@@ -308,3 +311,4 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,pycharm,python
 
 dev-config.yaml
+skyavionics_structure_2025-02-13_08-30.txt

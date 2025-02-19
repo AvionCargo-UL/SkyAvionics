@@ -4,8 +4,8 @@ from pymavlink import mavutil
 from pymavlink.mavutil import mavserial
 
 from src.domain.mavlink.mavlink_mission_item import MavlinkMissionItem
+from src.domain.mavlink.mavlink_telemetry import MavlinkTelemetry
 from src.configuration.service_locator import ServiceLocator
-
 
 class MavlinkService:
     def __init__(self, port: str, baudrate: int, timeout_ms: int, retries: int):
@@ -22,6 +22,32 @@ class MavlinkService:
                     print("Max retries reached. Unable to connect to mavlink.")
                 else:
                     print("Timeout! Unable to connect to mavlink... retrying.")
+
+    def download_telemetry(self):
+        msg = self.__mavlink_server.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
+        hb_msg = self.__mavlink_server.recv_match(type='HEARTBEAT', blocking=True)
+        battery_msg = self.__mavlink_server.recv_match(type='SYS_STATUS', blocking=True)
+        
+        return MavlinkTelemetry(
+            time_boot_ms=msg.time_boot_ms if msg else 0,
+            lat=msg.lat / 1e7 if msg else 0.0,
+            lon=msg.lon / 1e7 if msg else 0.0,
+            alt=msg.alt / 1000 if msg else 0.0,
+            relative_alt=msg.relative_alt / 1000 if msg else 0.0,
+            vx=msg.vx / 100 if msg else 0.0,
+            vy=msg.vy / 100 if msg else 0.0,
+            vz=msg.vz / 100 if msg else 0.0,
+            heading=msg.hdg / 100 if msg else 0.0,
+            airspeed=0.0,  # Requires different message type
+            groundspeed=0.0,  # Requires different message type
+            throttle=0.0,  # Requires different message type
+            battery_voltage=battery_msg.voltage_battery / 1000 if battery_msg else 0.0,
+            battery_current=battery_msg.current_battery / 100 if battery_msg else 0.0,
+            battery_remaining=battery_msg.battery_remaining if battery_msg else 0.0,
+            gps_num_satellites=hb_msg.satellites_visible if hb_msg else 0,
+            gps_fix_type=hb_msg.fix_type if hb_msg else 0,
+            armed=(hb_msg.base_mode & mavutil.mavlink.MAV_MODE_FLAG_SAFETY_ARMED) != 0 if hb_msg else False,
+        )
 
     def upload_mission(self, mission_items: List[MavlinkMissionItem]):
         self.__mavlink_server.waypoint_clear_all_send()
