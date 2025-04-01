@@ -3,7 +3,7 @@ import yaml
 from src.configuration.environment.constant import (
     ApplicationConfigurationHeaderKey,
     VisionConfigurationKey,
-    AntennaCommunicationConfigurationKey,
+    MavlinkCommunicationConfigurationKey,
 )
 from src.configuration.environment.exception.application_variable_not_found_exception import (
     ApplicationVariableNotFoundException,
@@ -26,6 +26,9 @@ class ApplicationConfiguration:
 
     def __get_float(self, header: str, variable_name: str) -> float:
         return float(self.__get_variable(header, variable_name))
+
+    def __get_str(self, header: str, variable_name: str) -> str:
+        return str(self.__get_variable(header, variable_name))
 
     @property
     def vision_camera_index(self) -> int:
@@ -70,14 +73,22 @@ class ApplicationConfiguration:
         )
 
     @property
-    def vision_marker_size(self) -> int:
+    def vision_marker_size_meters(self) -> int:
         return self.__get_int(
-            ApplicationConfigurationHeaderKey.VISION, VisionConfigurationKey.MARKER_SIZE
+            ApplicationConfigurationHeaderKey.VISION, VisionConfigurationKey.MARKER_SIZE_METERS
+        )
+    
+    @property
+    def mavlink_device_string(self) -> float:
+        return self.__get_str(
+            ApplicationConfigurationHeaderKey.MAVLINK_COMMUNICATION,
+            MavlinkCommunicationConfigurationKey.DEVICE_STR,
         )
 
     @property
-    def antenna_communication_refresh_rate_s(self) -> float:
+    def mavlink_communication_refresh_rate_s(self) -> float:
         return self.__get_float(
-            ApplicationConfigurationHeaderKey.ANTENNA_COMMUNICATION,
-            AntennaCommunicationConfigurationKey.REFRESH_RATE_S,
+            ApplicationConfigurationHeaderKey.MAVLINK_COMMUNICATION,
+            MavlinkCommunicationConfigurationKey.REFRESH_RATE_S,
         )
+

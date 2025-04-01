@@ -38,3 +38,9 @@ To fix linter and format issues run these two commands:
 black .
 ruff check . --fix
 ```
+
+On RPI:
+```commandline
+python3.11 -m black .
+python3.11 ruff check . --fix
+```

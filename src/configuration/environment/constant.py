@@ -4,7 +4,7 @@ class ContextConfigurationFilename:
 
 class ApplicationConfigurationHeaderKey:
     VISION: str = "vision"
-    ANTENNA_COMMUNICATION: str = "antenna_communication"
+    MAVLINK_COMMUNICATION: str = "mavlink_communication"
 
 
 class VisionConfigurationKey:
@@ -14,8 +14,8 @@ class VisionConfigurationKey:
     IMAGE_HEIGHT: str = "image_height"
     FOCAL_LENGTH_MM: str = "focal_length_mm"
     PIXEL_SIZE_MM: str = "pixel_size_mm"
-    MARKER_SIZE: str = "marker_size"
+    MARKER_SIZE_METERS: str = "marker_size_meters"
 
-
-class AntennaCommunicationConfigurationKey:
+class MavlinkCommunicationConfigurationKey:
+    DEVICE_STR: str = "device_string"
     REFRESH_RATE_S: str = "refresh_rate_s"

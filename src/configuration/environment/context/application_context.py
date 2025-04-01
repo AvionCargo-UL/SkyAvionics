@@ -1,11 +1,12 @@
 from abc import abstractmethod, ABC
 from queue import Queue
 from typing import List
+import time
 
 import numpy as np
 from pymavlink import mavutil
 
-from src.application.mavlink.mavlink_service import MavlinkService
+from src.application.mavlink.mavlink_service import MavlinkThread
 from src.application.vision.vision_thread import VisionThread
 from src.configuration.environment.application_configuration import (
     ApplicationConfiguration,
@@ -40,92 +41,7 @@ class ApplicationContext(ABC):
     def start_application(self):
 
         state_machine: StateMachine = ServiceLocator.get_dependency(StateMachine)
-        #mavlink_service: MavlinkService = ServiceLocator.get_dependency(MavlinkService)
-
-        mission_items: List[MavlinkMissionItem] = [
-            MavlinkMissionItem(
-                0,
-                0,
-                0,
-                mavutil.mavlink.MAV_FRAME_GLOBAL,
-                mavutil.mavlink.MAV_CMD_NAV_WAYPOINT,
-                0,
-                0,
-                1,
-                0,
-                0,
-                0,
-                37.874,
-                -122.262,
-                0,
-            ),  # Home
-            MavlinkMissionItem(
-                0,
-                0,
-                1,
-                mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
-                mavutil.mavlink.MAV_CMD_NAV_TAKEOFF,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                37.874,
-                -122.262,
-                1,
-            ),  # Takeoff
-            MavlinkMissionItem(
-                0,
-                0,
-                2,
-                mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
-                mavutil.mavlink.MAV_CMD_NAV_WAYPOINT,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                37.874,
-                -122.5,
-                20,
-            ),  # Waypoint 2
-            MavlinkMissionItem(
-                0,
-                0,
-                3,
-                mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
-                mavutil.mavlink.MAV_CMD_NAV_WAYPOINT,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                37.8,
-                -122.259,
-                20,
-            ),  # Waypoint 3
-            MavlinkMissionItem(
-                0,
-                0,
-                4,
-                mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
-                mavutil.mavlink.MAV_CMD_NAV_LAND,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-            ),  # Return to launch
-        ]
-
-        #mavlink_service.upload_mission(mission_items)
+        mavlink_thread: MavlinkThread = ServiceLocator.get_dependency(MavlinkThread)
 
         vision_thread: VisionThread = ServiceLocator.get_dependency(VisionThread)
         fast_api_thread: FastAPIThread = ServiceLocator.get_dependency(FastAPIThread)
@@ -133,8 +49,9 @@ class ApplicationContext(ABC):
         vision_thread.start()
         fast_api_thread.start()
 
-        #while True:
-        #    state_machine.execute()
+        while True:
+            state_machine.execute()
+            time.sleep(1)
 
         try:
             fast_api_thread.join()
@@ -168,30 +85,40 @@ class ApplicationContext(ABC):
         )
 
         ServiceLocator.register_dependency(
-            VisionThread, self._instantiate_vision_thread(vision_controller, send_frame_queue)
+            VisionThread,
+            self._instantiate_vision_thread(vision_controller, send_frame_queue),
         )
 
         ServiceLocator.register_dependency(
             FastAPIThread,
-            self._instantiate_fast_API_thread(send_frame_queue, send_telemetry_queue, response_queue),
+            self._instantiate_fast_API_thread(
+                send_frame_queue, send_telemetry_queue, response_queue
+            ),
         )
 
-        # ServiceLocator.register_dependency(
-        #    MavlinkService, self._instantiate_mavlink_service("COM5", 115200, 5000, 3)
-        # )
+        ServiceLocator.register_dependency(
+           MavlinkThread, self._instantiate_mavlink_service("COM5", 
+                                                            115200, # Baudrate
+                                                            5000, # Timeout
+                                                            3, # Retries
+                                                            self._configuration.mavlink_communication_refresh_rate_s, # Refresh rate
+                                                            )
+        )
 
         ServiceLocator.register_dependency(StateMachine, state_machine)
 
-
     @abstractmethod
     def _instantiate_vision_thread(
-        self, vision_controller: VisionController, send_frame_queue : Queue
+        self, vision_controller: VisionController, send_frame_queue: Queue
     ) -> VisionThread:
         pass
 
     @abstractmethod
     def _instantiate_fast_API_thread(
-        self, send_frame_queue : Queue, send_telemetry_queue: Queue, response_queue = Queue,
+        self,
+        send_frame_queue: Queue,
+        send_telemetry_queue: Queue,
+        response_queue=Queue,
     ) -> FastAPIThread:
         pass
 
@@ -203,8 +130,8 @@ class ApplicationContext(ABC):
 
     @abstractmethod
     def _instantiate_mavlink_service(
-        self, port: str, baudrate: int, timeout_ms: int, retries: int
-    ) -> MavlinkService:
+        self, device: str, baudrate: int, timeout_ms: int, retries: int, refresh_rate_s : float,
+    ) -> MavlinkThread:
         pass
 
     @abstractmethod

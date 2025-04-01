@@ -2,7 +2,7 @@ from queue import Queue
 
 import numpy as np
 
-from src.application.mavlink.mavlink_service import MavlinkService
+from src.application.mavlink.mavlink_service import MavlinkThread
 from src.application.vision.vision_thread import VisionThread
 from src.configuration.environment.constant import ContextConfigurationFilename
 from src.configuration.environment.context.application_context import ApplicationContext
@@ -13,12 +13,16 @@ from src.domain.vision.aruco.aruco_factory import ArucoFactory
 from src.domain.vision.vision_controller import VisionController
 from src.interfaces.api.fast_api_thread import FastAPIThread
 
+
 class DevelopmentContext(ApplicationContext):
     def __init__(self):
         super().__init__(ContextConfigurationFilename.DEVELOPMENT)
 
     def _instantiate_fast_API_thread(
-        self, send_frame_queue : Queue, send_telemetry_queue: Queue, response_queue = Queue,
+        self,
+        send_frame_queue: Queue,
+        send_telemetry_queue: Queue,
+        response_queue=Queue,
     ) -> FastAPIThread:
         return FastAPIThread(
             send_frame_queue,
@@ -27,20 +31,22 @@ class DevelopmentContext(ApplicationContext):
         )
 
     def _instantiate_vision_thread(
-        self, vision_controller: VisionController, send_frame_queue : Queue
+        self, vision_controller: VisionController, send_frame_queue: Queue
     ) -> VisionThread:
         return VisionThread(
             self._configuration.vision_camera_index,
             self._configuration.vision_fps,
             vision_controller,
             send_frame_queue,
+            capture_width=self._configuration.vision_image_width,
+            capture_height=self._configuration.vision_image_height,
         )
 
     def _instantiate_vision_controller(
         self, camera_distortion: np.ndarray, camera_matrix: np.ndarray
     ) -> VisionController:
         aruco_angle_resolver = ArucoAngleResolver(
-            self._configuration.vision_marker_size, camera_distortion, camera_matrix
+            self._configuration.vision_marker_size_meters, camera_distortion, camera_matrix
         )
         aruco_factory = ArucoFactory(aruco_angle_resolver)
         aruco_detector = ArucoDetector(aruco_factory)
@@ -48,12 +54,13 @@ class DevelopmentContext(ApplicationContext):
         return VisionController(aruco_detector, aruco_drawer)
 
     def _instantiate_mavlink_service(
-        self, port: str, baudrate: int, timeout_ms: int, retries: int
-    ) -> MavlinkService:
-        return MavlinkService(port, baudrate, timeout_ms, retries)
+        self, device: str, baudrate: int, timeout_ms: int, retries: int, refresh_rate_s : float,
+    ) -> MavlinkThread:
+        return MavlinkThread(self._configuration.mavlink_device_string, refresh_rate_s, baudrate, timeout_ms, retries)
 
     def _load_camera_distortion(self) -> np.ndarray:
-        return np.array([0, 0, 0, 0], dtype=np.float32)
+        return np.array([0.1115, -0.1089, 0, 0, 0], dtype=np.float32)
+        # TODO : Calibration
 
     def _load_camera_matrix(self) -> np.ndarray:
         width, height = (
