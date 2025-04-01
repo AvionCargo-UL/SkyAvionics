@@ -46,7 +46,7 @@ class DevelopmentContext(ApplicationContext):
         self, camera_distortion: np.ndarray, camera_matrix: np.ndarray
     ) -> VisionController:
         aruco_angle_resolver = ArucoAngleResolver(
-            self._configuration.vision_marker_size_meters, camera_distortion, camera_matrix
+            self._configuration.vision_marker_size_mm, camera_distortion, camera_matrix
         )
         aruco_factory = ArucoFactory(aruco_angle_resolver)
         aruco_detector = ArucoDetector(aruco_factory)
@@ -60,7 +60,7 @@ class DevelopmentContext(ApplicationContext):
 
     def _load_camera_distortion(self) -> np.ndarray:
         return np.array([0.1115, -0.1089, 0, 0, 0], dtype=np.float32)
-        # TODO : Calibration
+        # TODO : Calibration : [0.1115, -0.1089, 0, 0, 0]
 
     def _load_camera_matrix(self) -> np.ndarray:
         width, height = (

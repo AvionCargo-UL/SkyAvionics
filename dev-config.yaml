@@ -5,7 +5,7 @@ vision:
   image_height: 480
   focal_length_mm: 3.04
   pixel_size_mm: 0.00112
-  marker_size_meters: 0.5
+  marker_size_mm: 50
 mavlink_communication:
   device_string : "/dev/ttyUSB0"
   refresh_rate_s: 0.05

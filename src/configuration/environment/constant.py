@@ -14,7 +14,7 @@ class VisionConfigurationKey:
     IMAGE_HEIGHT: str = "image_height"
     FOCAL_LENGTH_MM: str = "focal_length_mm"
     PIXEL_SIZE_MM: str = "pixel_size_mm"
-    MARKER_SIZE_METERS: str = "marker_size_meters"
+    MARKER_SIZE_MM: str = "marker_size_mm"
 
 class MavlinkCommunicationConfigurationKey:
     DEVICE_STR: str = "device_string"

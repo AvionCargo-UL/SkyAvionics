@@ -73,9 +73,9 @@ class ApplicationConfiguration:
         )
 
     @property
-    def vision_marker_size_meters(self) -> int:
+    def vision_marker_size_mm(self) -> int:
         return self.__get_int(
-            ApplicationConfigurationHeaderKey.VISION, VisionConfigurationKey.MARKER_SIZE_METERS
+            ApplicationConfigurationHeaderKey.VISION, VisionConfigurationKey.MARKER_SIZE_MM
         )
     
     @property
